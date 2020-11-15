@@ -18,7 +18,7 @@ const formatResults = (results) => {
 const list = async (ctx, next) => {
   const genreFilter = ctx.query.genre;
   const yearFilter = ctx.query.year;
-  const sort = ctx.query.sort || "asc";
+  const sort = ctx.query.sort;
   const limit = ctx.query.page;
   let queryBuilder = findAll(
     DEFAULT_COLUMNS,

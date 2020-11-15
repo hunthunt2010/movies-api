@@ -18,3 +18,9 @@ This project serves an API for movies using KOA, Sqlite3, and Knex
 
 - Reponse
   - "imdbId", "title", "genres", "releaseDate", "budget", "overview", "runtime", "language", "productionCompanies"
+
+## Setup
+
+`npm install && npm start`
+
+This will start the server on port 8080 by default and use the database files locally in the project. An optional PORT env variable can be supplied to change the port `PORT=3000 npm start`
