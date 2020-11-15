@@ -1,6 +1,6 @@
 ## Purpose
 
-This project serves an API for movies using KOA, Sqlite3, and Knex
+This project serves an API for movies using KOA, Sqlite3, Knex and Jest
 
 ## Supported Routes
 
@@ -22,5 +22,8 @@ This project serves an API for movies using KOA, Sqlite3, and Knex
 ## Setup
 
 `npm install && npm start`
+`npm run start:dev` will run the server with live reload
 
 This will start the server on port 8080 by default and use the database files locally in the project. An optional PORT env variable can be supplied to change the port `PORT=3000 npm start`
+
+To run tests - `npm test` or `npm run test:watch`
