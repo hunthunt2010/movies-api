@@ -1,3 +1,4 @@
+const { getMovieDetails } = require("../api/omdb");
 const {
   findAll,
   findAllByYear,
@@ -38,6 +39,13 @@ const list = async (ctx, next) => {
   await next();
 };
 
+const formatRatings = (ratings) => {
+  return ratings.reduce((acc, rating) => {
+    acc[rating.Source] = rating.Value;
+    return acc;
+  }, {});
+};
+
 const details = async (ctx, next) => {
   const movieId = ctx.params.id;
   const movie = await get(movieId, [
@@ -52,10 +60,17 @@ const details = async (ctx, next) => {
     await next();
     return;
   }
-  const ratings = await getAverageMovieRating(movieId);
+  const databaseRating = await getAverageMovieRating(movieId);
+  let ratings = { db: databaseRating && databaseRating[0]["avg(`rating`)"] };
+  try {
+    const omdbDetails = await getMovieDetails(movie.imdbId);
+    ratings = { ...ratings, ...formatRatings(omdbDetails.Ratings) };
+  } catch (e) {
+    console.log("error fetching omdb details", e);
+  }
   ctx.body = {
     ...movie,
-    averageRating: ratings && ratings[0]["avg(`rating`)"],
+    ratings,
   };
   await next();
 };
