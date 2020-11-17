@@ -1,6 +1,6 @@
 const fetch = require("node-fetch");
 
-const OMDB_BASE_URL = "https://www.omdbapi.com?apikey=ceb9bf8c";
+const OMDB_BASE_URL = "https://www.omdbapi.com?apikey=ceb9bf8c"; // In production I'd take this API key in as an env variable
 
 const getMovieDetails = async (imdbId) => {
   try {

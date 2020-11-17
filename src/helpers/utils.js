@@ -12,12 +12,14 @@ const formatDateAsString = (date) => {
   return adjustedDate.toISOString().split("T")[0];
 };
 
-const validateParams = (ctx, next) => {
+const validateParams = async (ctx, next) => {
   const yearFilter = ctx.query.year;
   if (yearFilter && isNaN(yearFilter)) {
     ctx.status = 400;
     ctx.body = { message: `Invalid year param ${yearFilter}` };
+    return;
   }
+  await next();
 };
 
 module.exports = { formatAsPrice, formatDateAsString, validateParams };

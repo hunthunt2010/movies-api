@@ -19,15 +19,15 @@ describe(`GET /movies`, () => {
   it("should return all movies without a filter and default to 50 results", async () => {
     const response = await request(helper.getApp()).get("/movies");
     expect(response.body.length).toEqual(50);
-    expect(allFieldsSet(response.body)).toBe(true);
     expect(response.status).toEqual(200);
+    expect(allFieldsSet(response.body)).toBe(true);
   });
 
   it("should filter result set size", async () => {
     const response = await request(helper.getApp()).get("/movies?page=10");
     expect(response.body.length).toEqual(10);
-    expect(allFieldsSet(response.body)).toBe(true);
     expect(response.status).toEqual(200);
+    expect(allFieldsSet(response.body)).toBe(true);
   });
 
   it("should filter result set by year - order asc", async () => {
@@ -35,9 +35,9 @@ describe(`GET /movies`, () => {
       "/movies?page=1&year=1988"
     );
     expect(response.body.length).toEqual(1);
+    expect(response.status).toEqual(200);
     expect(allFieldsSet(response.body)).toBe(true);
     expect(response.body[0].releaseDate).toBe("1988-01-01");
-    expect(response.status).toEqual(200);
   });
 
   it("should filter result set by year - order desc", async () => {
@@ -45,9 +45,9 @@ describe(`GET /movies`, () => {
       "/movies?page=1&year=1988&sort=desc"
     );
     expect(response.body.length).toEqual(1);
+    expect(response.status).toEqual(200);
     expect(allFieldsSet(response.body)).toBe(true);
     expect(response.body[0].releaseDate).toBe("1988-12-01");
-    expect(response.status).toEqual(200);
   });
 
   it("should filter result set by genre", async () => {
@@ -55,27 +55,41 @@ describe(`GET /movies`, () => {
       "/movies?page=1&genre=Drama"
     );
     expect(response.body.length).toEqual(1);
+    expect(response.status).toEqual(200);
     expect(allFieldsSet(response.body)).toBe(true);
     expect(response.body[0].title).toBe("Ariel");
-    expect(response.status).toEqual(200);
   });
 
   it("should filter result set by genre and year", async () => {
     const response = await request(helper.getApp()).get(
       "/movies?page=1&year=1988&genre=Drama"
     );
+    expect(response.status).toEqual(200);
     expect(response.body.length).toEqual(1);
     expect(allFieldsSet(response.body)).toBe(true);
     expect(response.body[0].title).toBe("Torch Song Trilogy");
-    expect(response.status).toEqual(200);
+  });
+
+  it("should return 400 if a non number year supplied", async () => {
+    const response = await request(helper.getApp()).get(
+      "/movies?page=1&year=foo"
+    );
+    expect(response.status).toEqual(400);
+    expect(response.body.message).toEqual("Invalid year param foo");
   });
 });
 
 describe(`GET /movies/movieId`, () => {
   it("should return movie with details", async () => {
     const response = await request(helper.getApp()).get("/movies/2");
+    expect(response.status).toEqual(200);
+    // In a real test I'd mock out this request here
     expect(response.body).toEqual({
-      averageRating: 3.4018691588785046,
+      ratings: {
+        "Internet Movie Database": "7.5/10",
+        "Rotten Tomatoes": "87%",
+        db: 3.4018691588785046,
+      },
       budget: 0,
       genres: '[{"id": 18, "name": "Drama"}, {"id": 80, "name": "Crime"}]',
       imdbId: "tt0094675",
@@ -88,7 +102,6 @@ describe(`GET /movies/movieId`, () => {
       runtime: 69,
       title: "Ariel",
     });
-    expect(response.status).toEqual(200);
   });
 
   it("should return 404 if movie isnt found", async () => {
